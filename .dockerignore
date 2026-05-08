@@ -1,0 +1,8 @@
+.env
+.env.*
+.git
+.gitignore
+tmp_laravel/
+composer.phar
+node_modules/
+storage/logs/*.log
