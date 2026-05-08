@@ -5,10 +5,9 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip \
     libsqlite3-dev \
-    sqlite3
-
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql pdo_sqlite
+    sqlite3 \
+    libzip-dev \
+    && docker-php-ext-install pdo_mysql pdo_sqlite zip
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -19,11 +18,11 @@ WORKDIR /app
 # Copy project files
 COPY . /app
 
-# Make build.sh executable
-RUN chmod +x ./build.sh
+# Install dependencies (without running scripts that need .env)
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Run the build script
-RUN ./build.sh
+# Make start.sh executable
+RUN chmod +x ./start.sh
 
-# Start the PHP built-in server
-CMD php -S 0.0.0.0:${PORT:-8000} -t public
+# Start the application
+CMD ["./start.sh"]
