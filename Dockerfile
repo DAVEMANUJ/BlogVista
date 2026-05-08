@@ -18,14 +18,8 @@ WORKDIR /app
 # Copy project files
 COPY . /app
 
-# Install dependencies without scripts
+# Install production dependencies only
 RUN composer install --no-dev --optimize-autoloader --no-scripts
-
-# Generate packages.php using a temp .env (needed for artisan to boot)
-RUN echo 'APP_KEY=base64:dummykeyforbuildonlyxxxxxxxxxxxxxxxx=' > .env \
-    && rm -f bootstrap/cache/packages.php bootstrap/cache/services.php \
-    && php artisan package:discover --ansi \
-    && rm .env
 
 # Make start.sh executable
 RUN chmod +x ./start.sh
