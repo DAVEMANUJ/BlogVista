@@ -332,7 +332,10 @@ class BlogSeeder extends Seeder
 
         foreach ($blogs as $data) {
             $data['slug'] = Str::slug($data['title']);
-            Blog::create($data);
+            Blog::updateOrCreate(
+                ['slug' => $data['slug']],
+                $data
+            );
         }
     }
 }
