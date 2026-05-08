@@ -21,6 +21,9 @@ COPY . /app
 # Install dependencies (scripts will run at container start via start.sh)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
+# Clear stale bootstrap cache so package:discover regenerates without dev deps
+RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
+
 # Make start.sh executable
 RUN chmod +x ./start.sh
 
