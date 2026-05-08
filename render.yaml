@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: blogvista
+    env: php
+    region: oregon
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "php -S 0.0.0.0:$PORT -t public"
+    envVars:
+      - key: APP_NAME
+        value: BlogVista
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        value: "https://blogvista.onrender.com"
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: DB_DATABASE
+        value: database/database.sqlite
