@@ -21,6 +21,10 @@ COPY . /app
 # Install production dependencies only
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
+# Ensure required directories exist and are writable
+RUN mkdir -p bootstrap/cache storage/framework/cache storage/framework/sessions storage/framework/views storage/logs \
+    && chmod -R 775 bootstrap/cache storage
+
 # Make start.sh executable
 RUN chmod +x ./start.sh
 
