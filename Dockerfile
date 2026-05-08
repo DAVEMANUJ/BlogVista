@@ -18,11 +18,13 @@ WORKDIR /app
 # Copy project files
 COPY . /app
 
-# Install dependencies (scripts will run at container start via start.sh)
+# Install dependencies without scripts
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Clear stale bootstrap cache so package:discover regenerates without dev deps
-RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
+# Generate packages.php using a temp .env (needed for artisan to boot)
+RUN echo 'APP_KEY=base64:dummykeyforbuildonlyxxxxxxxxxxxxxxxx=' > .env \
+    && php artisan package:discover --ansi \
+    && rm .env
 
 # Make start.sh executable
 RUN chmod +x ./start.sh
