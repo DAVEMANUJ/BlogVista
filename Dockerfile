@@ -23,6 +23,7 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Generate packages.php using a temp .env (needed for artisan to boot)
 RUN echo 'APP_KEY=base64:dummykeyforbuildonlyxxxxxxxxxxxxxxxx=' > .env \
+    && rm -f bootstrap/cache/packages.php bootstrap/cache/services.php \
     && php artisan package:discover --ansi \
     && rm .env
 
