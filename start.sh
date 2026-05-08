@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-echo "Preparing SQLite database..."
-touch database/database.sqlite
+
 
 echo "Running migrations and seeders..."
 php artisan migrate:fresh --seed --force
