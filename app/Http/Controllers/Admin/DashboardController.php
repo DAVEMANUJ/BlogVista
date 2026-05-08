@@ -10,23 +10,17 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalBlogs      = Blog::count();
-        $publishedBlogs  = Blog::where('is_published', true)->count();
-        $draftBlogs      = Blog::where('is_published', false)->count();
-        $totalCategories = Category::count();
+        $stats = [
+            'blogs'      => Blog::count(),
+            'published'  => Blog::where('is_published', true)->count(),
+            'categories' => Category::count(),
+        ];
 
         $recentBlogs = Blog::with('category')
             ->latest()
             ->take(5)
             ->get();
 
-        $blogsByCategory = Category::withCount('blogs')
-            ->orderByDesc('blogs_count')
-            ->get();
-
-        return view('admin.dashboard', compact(
-            'totalBlogs', 'publishedBlogs', 'draftBlogs',
-            'totalCategories', 'recentBlogs', 'blogsByCategory'
-        ));
+        return view('admin.dashboard', compact('stats', 'recentBlogs'));
     }
 }
