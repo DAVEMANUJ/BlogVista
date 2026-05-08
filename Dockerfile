@@ -18,8 +18,8 @@ WORKDIR /app
 # Copy project files
 COPY . /app
 
-# Install dependencies (without running scripts that need .env)
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+# Install dependencies with scripts enabled
+RUN composer install --no-dev --optimize-autoloader
 
 # Make start.sh executable
 RUN chmod +x ./start.sh
