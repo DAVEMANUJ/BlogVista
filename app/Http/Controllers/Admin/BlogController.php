@@ -31,7 +31,8 @@ class BlogController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.blogs.create', compact('categories'));
+        $blog = new Blog();
+        return view('admin.blogs.create', compact('categories', 'blog'));
     }
 
     public function store(Request $request)
