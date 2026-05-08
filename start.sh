@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+echo "Running composer post-install scripts..."
+composer run-script post-autoload-dump || php artisan package:discover --ansi || true
+
 echo "Clearing caches..."
 php artisan optimize:clear || true
 

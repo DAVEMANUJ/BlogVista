@@ -18,8 +18,8 @@ WORKDIR /app
 # Copy project files
 COPY . /app
 
-# Install dependencies with scripts enabled
-RUN composer install --no-dev --optimize-autoloader
+# Install dependencies (scripts will run at container start via start.sh)
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Make start.sh executable
 RUN chmod +x ./start.sh
