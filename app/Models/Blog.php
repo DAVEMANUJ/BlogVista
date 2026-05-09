@@ -27,11 +27,18 @@ class Blog extends Model
 
     public function getImageUrlAttribute(): string
     {
-        if ($this->image && file_exists(storage_path('app/public/' . $this->image))) {
-            return asset('storage/' . $this->image);
+        if ($this->image) {
+            // If it's already a full URL (from image_url field), return as-is
+            if (filter_var($this->image, FILTER_VALIDATE_URL)) {
+                return $this->image;
+            }
+            // Otherwise it's a storage path
+            if (file_exists(storage_path('app/public/' . $this->image))) {
+                return asset('storage/' . $this->image);
+            }
         }
-        // Return a placeholder using the blog ID for consistent placeholder per blog
-        return 'https://picsum.photos/seed/' . $this->id . '/800/500';
+        // Return a deterministic placeholder
+        return 'https://picsum.photos/seed/' . ($this->id ?? rand(1,999)) . '/800/500';
     }
 
     public function getReadingTimeAttribute(): string

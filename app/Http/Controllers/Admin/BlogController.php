@@ -21,6 +21,9 @@ class BlogController extends Controller
         if ($request->filled('category')) {
             $query->where('category_id', $request->category);
         }
+        if ($request->filled('status')) {
+            $query->where('is_published', $request->status === 'published');
+        }
 
         $blogs      = $query->latest()->paginate(10)->withQueryString();
         $categories = Category::all();
@@ -43,14 +46,17 @@ class BlogController extends Controller
             'content'           => 'required|string',
             'category_id'       => 'required|exists:categories,id',
             'image'             => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image_url'         => 'nullable|url|max:2048',
             'published_at'      => 'nullable|date',
             'is_published'      => 'nullable|boolean',
         ]);
 
-        // Handle image upload
+        // Handle image: uploaded file takes priority over URL
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('blogs', 'public');
+        } elseif ($request->filled('image_url')) {
+            $imagePath = $request->image_url;  // store the URL directly
         }
 
         // Generate unique slug
@@ -73,7 +79,7 @@ class BlogController extends Controller
         ]);
 
         return redirect()->route('admin.blogs.index')
-            ->with('success', 'Blog post created successfully!');
+            ->with('success', 'Blog post created successfully! 🎉');
     }
 
     public function edit(Blog $blog)
@@ -90,17 +96,29 @@ class BlogController extends Controller
             'content'           => 'required|string',
             'category_id'       => 'required|exists:categories,id',
             'image'             => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image_url'         => 'nullable|url|max:2048',
             'published_at'      => 'nullable|date',
             'is_published'      => 'nullable|boolean',
         ]);
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            // Delete old image
+        // Handle remove_image checkbox
+        if ($request->boolean('remove_image')) {
             if ($blog->image && Storage::disk('public')->exists($blog->image)) {
                 Storage::disk('public')->delete($blog->image);
             }
+            $validated['image'] = null;
+        }
+
+        // Handle image: uploaded file takes priority over URL
+        if ($request->hasFile('image')) {
+            // Delete old stored image if it was a file (not a URL)
+            if ($blog->image && !filter_var($blog->image, FILTER_VALIDATE_URL)
+                && Storage::disk('public')->exists($blog->image)) {
+                Storage::disk('public')->delete($blog->image);
+            }
             $validated['image'] = $request->file('image')->store('blogs', 'public');
+        } elseif ($request->filled('image_url') && !$request->hasFile('image')) {
+            $validated['image'] = $request->image_url;
         }
 
         // Update slug if title changed
@@ -119,7 +137,7 @@ class BlogController extends Controller
         $blog->update($validated);
 
         return redirect()->route('admin.blogs.index')
-            ->with('success', 'Blog post updated successfully!');
+            ->with('success', 'Blog post updated successfully! ✅');
     }
 
     public function destroy(Blog $blog)
