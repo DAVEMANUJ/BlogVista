@@ -203,8 +203,8 @@
 @endpush
 
 @push('scripts')
-{{-- TinyMCE CDN (free, no API key needed for basic) --}}
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+{{-- TinyMCE Open Source CDN (No API key required) --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
 tinymce.init({
     selector: '#content',
@@ -234,8 +234,8 @@ tinymce.init({
         });
     },
     setup: function(editor) {
-        editor.on('init', function() {
-            // If empty, show placeholder hint
+        editor.on('change keyup paste', function() {
+            editor.save(); // Sync content to textarea on every keystroke/change
         });
     }
 });
