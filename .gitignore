@@ -17,5 +17,6 @@ yarn-error.log
 /.idea
 /.vscode
 *.md
+!README.md
 tmp_laravel/
 composer.phar
