@@ -492,8 +492,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <span>© {{ date('Y') }} BlogVista. All rights reserved.</span>
-            <span>Built with Laravel &amp; ❤️</span>
+            <span>&copy; {{ date('Y') }} BlogVista. All rights reserved.</span>
         </div>
     </div>
 </footer>

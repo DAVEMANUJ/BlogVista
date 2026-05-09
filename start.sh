@@ -2,6 +2,7 @@
 set -e
 
 echo "Discovering packages..."
+rm -f bootstrap/cache/*.php
 php artisan package:discover --ansi || true
 
 echo "Clearing caches..."

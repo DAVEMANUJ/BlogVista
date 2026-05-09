@@ -6,3 +6,7 @@ tmp_laravel/
 composer.phar
 node_modules/
 storage/logs/*.log
+vendor/
+bootstrap/cache/
+.phpunit.cache/
+tests/
